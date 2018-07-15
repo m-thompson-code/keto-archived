@@ -2,7 +2,11 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
+import { GlobalService } from '../../services/global.service';
+
 import { ContainerComponent } from './container.component';
+
+import { PreloaderModule } from '../preloader';
 
 @NgModule({
   declarations: [
@@ -10,9 +14,11 @@ import { ContainerComponent } from './container.component';
   ],
   imports: [
   	CommonModule,
-    RouterModule
+    RouterModule,
+
+    PreloaderModule
   ],
-  providers: [],
+  providers: [GlobalService],
   exports: [ ContainerComponent ]
 })
 export class ContainerModule { }

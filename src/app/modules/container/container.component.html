@@ -7,8 +7,16 @@
 	</div>
 </div>
 
-<div [class]="'overlay' + (loading ? ' active' : '')">
-	<div *ngIf="loading" class="progress">
-    	<div class="indeterminate"></div>
-  	</div>
+<div [class]="'overlay' + (globalService.initializing || loading ? ' active' : '')">
+</div>
+
+<div *ngIf="globalService.initializing || loading" class="loading-progress progress">
+	<div class="indeterminate"></div>
+</div>
+
+<div *ngIf="globalService.initializing" class="initialize-progress">
+	<div [style.width]="'100vw'" [style.background]="'white'" [style.text-align]="'center'">
+		<div [style.margin-bottom]="'16px'"><span>Initializing..</span></div>
+		<keto-preloader [delay]="500"></keto-preloader>
+	</div>
 </div>

@@ -19,6 +19,11 @@ import { ItemFormComponent } from './itemForm';
 
 // Modules
 import { ContainerModule } from './modules/container';
+import { InputModule } from './modules/input';
+import { PreloaderModule } from './modules/preloader';
+
+// Services
+import { GlobalService } from './services/global.service';
 
 @NgModule({
   declarations: [
@@ -32,13 +37,15 @@ import { ContainerModule } from './modules/container';
     CommonModule,
 
     ContainerModule,
+    InputModule,
+    PreloaderModule,
 
     RouterModule.forRoot(ROUTES, {
       useHash: true,
       preloadingStrategy: PreloadAllModules
     }),
   ],
-  providers: [],
+  providers: [GlobalService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

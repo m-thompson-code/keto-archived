@@ -1,4 +1,35 @@
 <keto-container [loading]="loading">
 	<p>Item Form</p>
 	<a [routerLink]="['/home']">Go to home</a>
+	<div class="row">
+		<div class="input-field col s12 m6">
+	      	<input id="name" type="text" class="validate">
+	      	<label for="name">Item name</label>
+	    </div>
+	    <div class="input-field col s12 m6">
+	      	<input id="brand" type="text">
+	      	<label for="brand">Brand</label>
+	    </div>
+	</div>
+
+	<!-- TODO: Servings -->
+
+	<div class="row">
+		<div class="input-field col m3 s6">
+	      	<input id="calories" type="text">
+	      	<label for="calories">Total Calories</label>
+	    </div>
+		<div class="input-field col m3 s6">
+	      	<input id="fats" type="text">
+	      	<label for="fats">Total fats (grams)</label>
+	    </div>
+		<div class="input-field col m3 s6">
+	      	<input id="proteins" type="text">
+	      	<label for="proteins">Total proteins (grams)</label>
+	    </div>
+		<div class="input-field col m3 s6">
+	      	<input id="carbs" type="text">
+	      	<label for="carbs">Total carbs (grams)</label>
+	    </div>
+	</div>
 </keto-container>

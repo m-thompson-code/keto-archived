@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
 
+import { GlobalService } from '../../services/global.service';
+
 @Component({
   selector: 'keto-container',
   templateUrl: './container.component.html',
@@ -9,7 +11,7 @@ export class ContainerComponent {
 
   @Input() loading: boolean;
 
-  constructor() {
+  constructor(public globalService: GlobalService) {
   }
 
   ngOnInit() {
