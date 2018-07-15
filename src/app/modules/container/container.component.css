@@ -1,0 +1,27 @@
+.overlay {
+	background: white;
+
+	overflow: hidden;
+	width: 0;
+	height: 0;
+
+	opacity: 0;
+
+	transition: opacity 2s;
+}
+.overlay.active {
+	position:fixed;
+
+	top: 0;
+	left: 0;
+
+	height: 100vh;
+	width: 100vw;
+
+	opacity: .75;
+	z-index: 2000;
+}
+.overlay .progress {
+	border-radius: 0;
+	margin: 0;
+}

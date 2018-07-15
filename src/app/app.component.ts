@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 
 import * as firebase from "firebase";
 
@@ -10,7 +10,7 @@ import * as firebase from "firebase";
 export class AppComponent {
   title = 'keto app';
 
-  constructor() {
+  constructor(private ref: ChangeDetectorRef) {
   }
 
   ngOnInit() {
@@ -18,4 +18,9 @@ export class AppComponent {
   }
 
   ngAfterViewInit() {}
+
+  forceChangeDetection() {
+    console.log("Forcing change detection");
+    this.ref.detectChanges();
+  }
 }
