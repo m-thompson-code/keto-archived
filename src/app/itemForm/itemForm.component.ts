@@ -26,10 +26,16 @@ export class ItemFormComponent {
   private servingInput: InputComponent;
 
   servingKey: string;
-  servingText: string;
+  servingName: string;
+  newServingName: string;
 
   loadingSuggestedServings: boolean;
   cleanedServingText: string;
+
+  showServingInput: boolean;
+  showUpdateServingName: boolean;
+
+  creating: boolean;
 
   constructor(public router: Router, private route: ActivatedRoute, private globalService: GlobalService) {
     this.router = router;
@@ -40,7 +46,7 @@ export class ItemFormComponent {
 
     this.loading = true;
 
-    this.servingText = null;
+    this.servingName = null;
 
     this.route.params.subscribe(params => {
       this.itemObjKey = params['itemObjKey'] || this.getNewFirebaseKey();
@@ -58,6 +64,11 @@ export class ItemFormComponent {
   getItemObj() {
     if (!this.globalService.dbSnapshot.itemObjs[this.itemObjKey]) {
       this.globalService.dbSnapshot.itemObjs[this.itemObjKey] = {};
+      this.showServingInput = true;
+      this.creating = true;
+    } else {
+      this.creating = false;
+      this.showServingInput = false;
     }
 
     this.itemObj = this.globalService.dbSnapshot.itemObjs[this.itemObjKey];
@@ -108,7 +119,7 @@ export class ItemFormComponent {
     if (!this.oldItemObj.servings[this.servingKey]) {
       console.error("unexpected missing oldItemObj with serverKey");
     } else {
-      this.servingText = this.oldItemObj.servings[servingKey].name;
+      this.servingName = this.oldItemObj.servings[servingKey].name;
     }
   }
 
@@ -116,7 +127,7 @@ export class ItemFormComponent {
     console.log("updateServing");
 
     this.loadingSuggestedServings = false;
-    this.cleanedServingText = this.servingText.replace(/[^\w]/g,'').trim().toLowerCase();
+    this.cleanedServingText = this.servingName.replace(/[^\w]/g,'').trim().toLowerCase();
 
     for (var servingKey of Object.keys(this.oldItemObj.servings || {})) {
       // TODO: change to the alg that shows suggestions (then if there's one, select that one)
@@ -138,7 +149,7 @@ export class ItemFormComponent {
 
     this.oldItemObj.servings[serverKey] = {};
     this.oldItemObj.servings[serverKey].key = serverKey;
-    this.oldItemObj.servings[serverKey].name = this.servingText;
+    this.oldItemObj.servings[serverKey].name = this.servingName;
 
     this.setServingKey(serverKey);
   }
@@ -180,13 +191,14 @@ export class ItemFormComponent {
   }
 
   cancel() {
-    if (this.servingText) {
-      this.servingText = null;
+    if (this.servingName) {
+      this.servingName = null;
       this.servingKey = null;
       return;
     }
 
-    this.router.navigateByUrl('/home');
+    // this.router.navigateByUrl('/home');
+    this.back();
   }
 
   update() {
@@ -217,5 +229,45 @@ export class ItemFormComponent {
       this.globalService.toast(error, "red");
       return false;
     });
+  }
+
+  back() {
+    window.history.back();
+  }
+
+  updateServingName() {
+    var updates = {};
+
+    if (this.loading) {
+      this.globalService.toast("Please wait..", "grey");
+      return Promise.resolve(null);
+    }
+
+    updates['itemObjs/' + this.itemObjKey + '/servings/' + this.servingKey + '/name'] = this.newServingName;
+
+    this.loading = true;
+    return firebase.database().ref().update(updates).then(() => {
+      this.loading = false;
+      this.servingName = this.newServingName;
+      
+      this.itemObj.servings[this.servingKey].name = this.servingName;
+      this.oldItemObj.servings[this.servingKey].name = this.servingName;
+      this.itemObj.servings[this.servingKey].slugName = this.servingName.replace(/[^\w]/g,'').trim().toLowerCase();
+      this.oldItemObj.servings[this.servingKey].slugName = this.servingName.replace(/[^\w]/g,'').trim().toLowerCase();
+      
+      this.newServingName = null;
+      this.showUpdateServingName = false
+
+      this.globalService.toast("Updated serving name successful", "green");
+      return true;
+    }).catch(error => {
+      console.error(error);
+      this.globalService.toast(error, "red");
+      return false;
+    });
+  }
+
+  confirmDeleteServing() {
+    console.error("TODO");
   }
 }

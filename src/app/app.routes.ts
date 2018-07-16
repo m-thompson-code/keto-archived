@@ -7,5 +7,5 @@ export const ROUTES: Routes = [
   { path: '', component: HomeComponent },
   { path: 'home', component: HomeComponent },
   { path: 'form/item', component: ItemFormComponent },
-  { path: 'form/item/:itemKey', component: ItemFormComponent },
+  { path: 'form/item/:itemObjKey', component: ItemFormComponent },
 ];

@@ -1,4 +1,14 @@
 <keto-container [loading]="loading">
+	<div class="row">
+		<div class="col s12">
+			<div class="has-bottom-border">
+				<div [style.display]="'flex'">
+					<h3 class="header" [style.flex-grow]="1">{{ creating ? 'Create a new item' : 'Update this existing item' }}</h3>
+		      		<h3><a (click)="back()" class="waves-effect waves-grey btn-flat">Back</a></h3>
+				</div>
+			</div>
+		</div>
+	</div>
 	<ng-container *ngIf="oldItemObj">
 		<div class="row">
 			<div class="col s12 m6">
@@ -10,26 +20,48 @@
 		</div>
 
 		<div *ngIf="itemObj.name" class="row">
-			<div class="col s12 m6">
-		      	<keto-input #servingInput [label]="'Serving'" [text]="servingText" (valueChanged)="servingText = $event; debounceUpdateServing()"></keto-input>
+			<div *ngIf="showServingInput" class="col s12 m6">
+		      	<div class="input-icon-container">
+			      	<keto-input #servingInput [label]="'Serving'" [text]="servingName" (valueChanged)="servingName = $event; debounceUpdateServing()"></keto-input>
+					<keto-action-icon *ngIf="getArrayOfOldServings() && getArrayOfOldServings().length" (click)="showServingInput = false" [icon]="'close'"></keto-action-icon>
+			    </div>
 		    </div>
-		    <div class="col s12 m6">
+		    <div [class]="'col s12 ' + (showServingInput ? 'm6' : 'm12')">
 		    	<div [style.position]="'relative'">
-			    	<div *ngIf="loadingSuggestedServings" class="progress" [style.margin]="0" [style.position]="'absolute'">
+			    	<div *ngIf="loadingSuggestedServings" class="progress" [style.margin]="0" [style.position]="'absolute'" [style.z-index]="1">
 					    <div class="indeterminate"></div>
 					</div>
 				</div>
 
-		      	<div [style.align-items]="'flex-end'">
-		      		<div>
-			      		<div *ngFor="let serving of getArrayOfOldServings()" class="chip" (click)="setServingKey(serving.key)" [style.cursor]="'pointer'">{{ serving.name }}
-			      		</div>
-			      	</div>
-			    </div>
+				<div [style.display]="'flex'" [style.align-items]="'center'" [style.opacity]="(loadingSuggestedServings ? '.25' : '')">
+					<keto-action-icon *ngIf="!showServingInput" (click)="showServingInput = true" [icon]="'add_circle_outline'" [style.margin-right]="'1rem'"></keto-action-icon>
+
+			      	<div [style.align-items]="'flex-end'" [style.flex-grow]="1">
+			      		<div>
+				      		<div *ngFor="let serving of getArrayOfOldServings()" class="chip" (click)="setServingKey(serving.key)" [style.cursor]="'pointer'" [style.background]="serving.key === servingKey ? '#2bbbad' : ''">{{ serving.name }}
+				      		</div>
+				      	</div>
+				    </div>
+				</div>
 		    </div>
 		</div>
 
-		<div *ngIf="servingKey && oldItemObj.servings[servingKey]" class="row">
+		<div *ngIf="servingKey && itemObj.servings && itemObj.servings[servingKey] && !showUpdateServingName" class="row">
+			<div class="col s12">
+	      		<a (click)="showUpdateServingName = true" [class]="'waves-effect waves-teal btn'" [style.margin-right]="'1rem'">Update serving name</a>
+	      		<a (click)="confirmDeleteServing()" class="waves-effect waves-grey btn-flat">Delete</a>
+			</div>
+		</div>
+
+		<div *ngIf="servingKey && itemObj.servings && itemObj.servings[servingKey] && showUpdateServingName" class="row">
+			<div class="col s12">
+				<keto-input [label]="'New name for serving'" [text]="newServingName" (valueChanged)="newServingName = $event"></keto-input>
+		      	<a (click)="updateServingName()" [class]="'waves-effect waves-teal btn' + (!newServingName ? ' disabled' : '')" [style.margin-right]="'1rem'">Confirm</a>
+		      	<a (click)="newServingName = null; showUpdateServingName = false" class="waves-effect waves-grey btn-flat">Cancel</a>
+			</div>
+		</div>
+
+		<div *ngIf="servingKey && oldItemObj.servings && oldItemObj.servings[servingKey]" class="row">
 			<div class="col m3 s6">
 				<div class="input-icon-container">
 			      	<keto-input [label]="'Total Calories'" [text]="oldItemObj.servings[servingKey].totalCalories" (valueChanged)="updateOldServingAttr('totalCalories', $event)"></keto-input>
@@ -56,19 +88,19 @@
 		    </div>
 		</div>
 
-		<div *ngIf="servingKey && oldItemObj.servings[servingKey] && currentOldServingHasRequiredAttrs()" class="row">
+		<div *ngIf="servingKey && oldItemObj.servings && oldItemObj.servings[servingKey] && currentOldServingHasRequiredAttrs()" class="row">
 			<div class="col s12">
 		      	<keto-input [label]="'Additional search terms ex: (dairy; favorite)'" [text]="oldItemObj.servings[servingKey].search"></keto-input>
 		    </div>
 		</div>
 
-		<div *ngIf="servingKey && oldItemObj.servings[servingKey] && !currentOldServingHasRequiredAttrs()" class="row">
+		<div *ngIf="servingKey && oldItemObj.servings && oldItemObj.servings[servingKey] && !currentOldServingHasRequiredAttrs()" class="row">
 			<div class="col s12">
 		      	<p>Please fill in all of the nutrition facts then click 'Confirm' to save your item and your selected serving</p>
 		    </div>
 		</div>
 
-		<div *ngIf="servingText && !servingKey" class="row">
+		<div *ngIf="showServingInput && servingName && !servingKey" class="row">
 			<div class="col s12">
 				<div (click)="createNewServing()" [style.display]="'flex'" [style.justify-content]="'flex-end'">
 		      		<a [class]="'waves-effect waves-teal btn'">Add serving</a>
@@ -76,11 +108,11 @@
 			</div>
 		</div>
 
-		<div *ngIf="itemObj && itemObj.name && getArrayOfOldServings() && getArrayOfOldServings().length && (!servingText || servingKey)" class="row">
+		<div *ngIf="itemObj && itemObj.name && getArrayOfOldServings() && getArrayOfOldServings().length && (!servingName || servingKey)" class="row">
 			<div class="col s12">
 		      	<div [style.display]="'flex'" [style.justify-content]="'flex-end'">
 		      		<a (click)="cancel()" class="waves-effect waves-grey btn-flat" [style.margin-right]="'1rem'">Cancel</a>
-		      		<a (click)="update()" [class]="'waves-effect waves-teal btn' + ((servingText || servingKey) && !currentOldServingHasRequiredAttrs() ? ' disabled' : '')">Confirm</a>
+		      		<a (click)="update()" [class]="'waves-effect waves-teal btn' + ((servingName || servingKey) && !currentOldServingHasRequiredAttrs() ? ' disabled' : '')"> {{ creating ? 'Confirm new item' : 'Confirm updates' }}</a>
 		      	</div>
 		    </div>
 		</div>
