@@ -1,35 +1,95 @@
 <keto-container [loading]="loading">
-	<p>Item Form</p>
-	<a [routerLink]="['/home']">Go to home</a>
-	<div class="row">
-		<div class="input-field col s12 m6">
-	      	<input id="name" type="text" class="validate">
-	      	<label for="name">Item name</label>
-	    </div>
-	    <div class="input-field col s12 m6">
-	      	<input id="brand" type="text">
-	      	<label for="brand">Brand</label>
-	    </div>
-	</div>
+	<ng-container *ngIf="oldItemObj">
+		<div class="row">
+			<div class="col s12 m6">
+		      	<keto-input [label]="'Item name'" [text]="itemObj.name" (valueChanged)="itemObj.name = $event"></keto-input>
+		    </div>
+		    <div class="col s12 m6">
+		      	<keto-input [label]="'Brand'" [text]="itemObj.brand" (valueChanged)="itemObj.brand = $event"></keto-input>
+		    </div>
+		</div>
 
-	<!-- TODO: Servings -->
+		<div *ngIf="itemObj.name" class="row">
+			<div class="col s12 m6">
+		      	<keto-input #servingInput [label]="'Serving'" [text]="servingText" (valueChanged)="servingText = $event; debounceUpdateServing()"></keto-input>
+		    </div>
+		    <div class="col s12 m6">
+		    	<div [style.position]="'relative'">
+			    	<div *ngIf="loadingSuggestedServings" class="progress" [style.margin]="0" [style.position]="'absolute'">
+					    <div class="indeterminate"></div>
+					</div>
+				</div>
 
-	<div class="row">
-		<div class="input-field col m3 s6">
-	      	<input id="calories" type="text">
-	      	<label for="calories">Total Calories</label>
-	    </div>
-		<div class="input-field col m3 s6">
-	      	<input id="fats" type="text">
-	      	<label for="fats">Total fats (grams)</label>
-	    </div>
-		<div class="input-field col m3 s6">
-	      	<input id="proteins" type="text">
-	      	<label for="proteins">Total proteins (grams)</label>
-	    </div>
-		<div class="input-field col m3 s6">
-	      	<input id="carbs" type="text">
-	      	<label for="carbs">Total carbs (grams)</label>
-	    </div>
-	</div>
+		      	<div [style.align-items]="'flex-end'">
+		      		<div>
+			      		<div *ngFor="let serving of getArrayOfOldServings()" class="chip" (click)="setServingKey(serving.key)" [style.cursor]="'pointer'">{{ serving.name }}
+			      		</div>
+			      	</div>
+			    </div>
+		    </div>
+		</div>
+
+		<div *ngIf="servingKey && oldItemObj.servings[servingKey]" class="row">
+			<div class="col m3 s6">
+				<div class="input-icon-container">
+			      	<keto-input [label]="'Total Calories'" [text]="oldItemObj.servings[servingKey].totalCalories" (valueChanged)="updateOldServingAttr('totalCalories', $event)"></keto-input>
+					<keto-action-icon [icon]="'expand_more'"></keto-action-icon>
+			    </div>
+		    </div>
+			<div class="col m3 s6">
+		      	<div class="input-icon-container">
+			      	<keto-input [label]="'Total fats (grams)'" [text]="oldItemObj.servings[servingKey].totalFats" (valueChanged)="updateOldServingAttr('totalFats', $event)"></keto-input>
+					<keto-action-icon [icon]="'expand_more'"></keto-action-icon>
+			    </div>
+		    </div>
+			<div class="col m3 s6">
+		      	<div class="input-icon-container">
+			      	<keto-input [label]="'Total protein (grams)'" [text]="oldItemObj.servings[servingKey].totalProtein" (valueChanged)="updateOldServingAttr('totalProtein', $event)"></keto-input>
+					<keto-action-icon [icon]="'expand_more'"></keto-action-icon>
+			    </div>
+		    </div>
+			<div class="col m3 s6">
+		      	<div class="input-icon-container">
+			      	<keto-input [label]="'Total carbs (grams)'" [text]="oldItemObj.servings[servingKey].totalCarbs" (valueChanged)="updateOldServingAttr('totalCarbs', $event)"></keto-input>
+					<keto-action-icon [icon]="'expand_more'"></keto-action-icon>
+			    </div>
+		    </div>
+		</div>
+
+		<div *ngIf="servingKey && oldItemObj.servings[servingKey] && currentOldServingHasRequiredAttrs()" class="row">
+			<div class="col s12">
+		      	<keto-input [label]="'Additional search terms ex: (dairy; favorite)'" [text]="oldItemObj.servings[servingKey].search"></keto-input>
+		    </div>
+		</div>
+
+		<div *ngIf="servingKey && oldItemObj.servings[servingKey] && !currentOldServingHasRequiredAttrs()" class="row">
+			<div class="col s12">
+		      	<p>Please fill in all of the nutrition facts then click 'Confirm' to save your item and your selected serving</p>
+		    </div>
+		</div>
+
+		<div *ngIf="servingText && !servingKey" class="row">
+			<div class="col s12">
+				<div (click)="createNewServing()" [style.display]="'flex'" [style.justify-content]="'flex-end'">
+		      		<a [class]="'waves-effect waves-teal btn'">Add serving</a>
+		      	</div>
+			</div>
+		</div>
+
+		<div *ngIf="itemObj && itemObj.name && getArrayOfOldServings() && getArrayOfOldServings().length && (!servingText || servingKey)" class="row">
+			<div class="col s12">
+		      	<div [style.display]="'flex'" [style.justify-content]="'flex-end'">
+		      		<a (click)="cancel()" class="waves-effect waves-grey btn-flat" [style.margin-right]="'1rem'">Cancel</a>
+		      		<a (click)="update()" [class]="'waves-effect waves-teal btn' + ((servingText || servingKey) && !currentOldServingHasRequiredAttrs() ? ' disabled' : '')">Confirm</a>
+		      	</div>
+		    </div>
+		</div>
+		<div *ngIf="!itemObj || !itemObj.name || !getArrayOfOldServings() || !getArrayOfOldServings().length" class="row">
+			<div class="col s12">
+		      	<div [style.display]="'flex'" [style.justify-content]="'flex-end'">
+		      		<a (click)="cancel()" class="waves-effect waves-grey btn-flat">Cancel</a>
+		      	</div>
+		    </div>
+		</div>
+	</ng-container>
 </keto-container>

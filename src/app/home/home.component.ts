@@ -15,9 +15,9 @@ export class HomeComponent {
   }
 
   ngOnInit() {
-    this.loading = true;
+    // this.loading = true;
     console.log("Hello from home");
-  	console.log(firebase);
+  	// console.log(firebase);
   }
 
   ngAfterViewInit() {}

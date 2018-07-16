@@ -2,6 +2,8 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 
 import * as firebase from "firebase";
 
+import { GlobalService } from './services/global.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -10,7 +12,7 @@ import * as firebase from "firebase";
 export class AppComponent {
   title = 'keto app';
 
-  constructor(private ref: ChangeDetectorRef) {
+  constructor(private ref: ChangeDetectorRef, public globalService: GlobalService) {
   }
 
   ngOnInit() {

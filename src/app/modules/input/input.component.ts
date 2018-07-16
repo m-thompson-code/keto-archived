@@ -1,5 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
+import { GlobalService } from '../../services/global.service';
+
 @Component({
   selector: 'keto-input',
   styleUrls: [ './input.style.css' ],
@@ -10,16 +12,20 @@ export class InputComponent {
  	@Input() text: string;
  	@Input() label: string;
 
+ 	@Input() placeholder: string;
+ 	@Input() type: string;
+
  	@Output() valueChanged: EventEmitter<string> = new EventEmitter();
 
  	focused: boolean;
 
- 	id: string;
+ 	id: number;
  	
-	constructor() {
+	constructor(public globalService: GlobalService) {
 	}
 
 	ngOnInit() {
-		this.id = "" + Date.now();
+		this.focused = false;
+		this.id = this.globalService.getIncID();//"" + Date.now();
 	}
 }

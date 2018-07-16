@@ -21,6 +21,7 @@ import { ItemFormComponent } from './itemForm';
 import { ContainerModule } from './modules/container';
 import { InputModule } from './modules/input';
 import { PreloaderModule } from './modules/preloader';
+import { ActionIconModule } from './modules/actionIcon';
 
 // Services
 import { GlobalService } from './services/global.service';
@@ -39,6 +40,7 @@ import { GlobalService } from './services/global.service';
     ContainerModule,
     InputModule,
     PreloaderModule,
+    ActionIconModule,
 
     RouterModule.forRoot(ROUTES, {
       useHash: true,

@@ -1,5 +1,9 @@
 <main>
-  <router-outlet></router-outlet>
+  <router-outlet *ngIf="!globalService.initializing"></router-outlet>
+
+  <keto-container *ngIf="globalService.initializing" [loading]="true">
+  </keto-container>
+
   <div (click)="forceChangeDetection()" class="force-change-detection">
   	<a>Force change detection</a>
   </div>

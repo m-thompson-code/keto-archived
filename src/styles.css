@@ -1,1 +1,20 @@
 /* You can add global styles to this file, and also import other style files */
+keto-action-icon {
+  line-height: 1;
+  transition: color .2s, fill .2s;
+  
+  /*Defaults colors font icons*/
+  color: rgba(0,0,0,0.87);
+}
+
+.redToast {
+	background: red;
+}
+
+.greenToast {
+	background: green;
+}
+
+.greyToast {
+	background: grey;
+}

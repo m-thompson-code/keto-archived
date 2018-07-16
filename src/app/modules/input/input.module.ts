@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
+import { GlobalService } from '../../services/global.service';
+
 import { InputComponent } from './input.component';
 
 @NgModule({
@@ -10,6 +12,7 @@ import { InputComponent } from './input.component';
   imports: [
     CommonModule
   ],
+  providers: [GlobalService],
   exports: [ InputComponent ]
 })
 export class InputModule {

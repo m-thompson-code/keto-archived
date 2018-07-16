@@ -1,0 +1,10 @@
+.input-icon-container {
+	display: flex;
+}
+.input-icon-container keto-input {
+	flex-grow: 1;
+}
+.input-icon-container keto-action-icon {
+	align-self: flex-end;
+	margin-bottom: calc(1rem + 8px);
+}
