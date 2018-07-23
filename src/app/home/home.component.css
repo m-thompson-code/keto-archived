@@ -1,0 +1,77 @@
+.collection-item-label {
+	display: flex;
+}
+.item-name {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	margin-right: 8px;
+}
+.expander {
+	display: flex;
+	align-items: center;
+}
+:host /deep/ .expander keto-action-icon .material-icons {
+	color: #26a69a;
+}
+:host /deep/ .expander.expanded keto-action-icon .material-icons {
+	color: white;
+}
+
+.brand-text {
+	color: #212121;
+}
+
+.collection-item.expanded {
+	border-bottom: 0;
+}
+
+.collection-item.extra {
+	border-color: #26a69a;
+	border: 1px solid;
+	/*border-left: 10px solid;*/
+	background: white !important;
+}
+
+.servings-container {
+	display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.facts-container {
+	display: flex;
+    justify-content: space-between;
+    flex-grow: 1;
+
+    margin-left: -20px;
+    margin-right: -20px;
+}
+
+.fact-container {
+	display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.servings-modifier {
+	display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    flex-grow: 1;
+}
+
+.servings-input {
+	max-width: 55px;
+	margin-right: 20px;
+	margin-left:20px;
+}
+:host /deep/ .servings-input keto-input .input-field {
+	margin-bottom: 0;
+}
+
+.servings-button {
+	margin-bottom: 8px;
+}

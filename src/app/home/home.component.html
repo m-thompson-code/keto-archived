@@ -1,4 +1,126 @@
 <keto-container [loading]="loading">
 	<p>Home: {{ loading }}</p>
 	<a [routerLink]="['/form/item']">Go to item Form</a>
+	<!-- <ng-container *ngIf="globalService && globalService.dbSnapshot && globalService.dbSnapshot.itemObjs"> -->
+	<div class="row">
+		<div class="col s12">
+			<div class="has-bottom-border">
+				<div [style.display]="'flex'">
+					<h3 class="header" [style.flex-grow]="1">Add item(s)</h3>
+		      		<h3><a (click)="back()" class="waves-effect waves-grey btn-flat">Back</a></h3>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s12">
+			<keto-input [label]="'Search items'" [text]="''" (valueChanged)="$event"></keto-input>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col s12">
+			<ng-container *ngIf="globalService && globalService.dbSnapshot && globalService.dbSnapshot.itemObjs">
+				<div class="collection">
+					<ng-container *ngFor="let itemObj of getItemObjsAry(); let i = index">
+						<a class="collection-item">{{ itemObj.name }}</a>
+						<!-- <a class="collection-item active">{{ itemObj.name }}</a> -->
+						<a class="collection-item">
+							<div class="collection-item-label">
+								<div class="item-name">
+									<span class="flow-text">
+										{{ itemObj.name || 'Unknown item' }}
+									</span>
+									<span *ngIf="itemObj.brand" class="brand-text">
+										{{ itemObj.brand }}
+									</span>
+								</div>
+								<div class="expander">
+									<keto-action-icon [icon]="'expand_more'"></keto-action-icon>
+								</div>
+							</div>
+						</a>
+
+						<a class="collection-item active expanded">
+							<div class="collection-item-label">
+								<div class="item-name">
+									<span class="flow-text">
+										{{ itemObj.name || 'Unknown item' }}
+									</span>
+									<span *ngIf="itemObj.brand" class="brand-text">
+										{{ itemObj.brand }}
+									</span>
+								</div>
+								<div class="expander expanded">
+									<keto-action-icon [icon]="'expand_less'"></keto-action-icon>
+								</div>
+							</div>
+						</a>
+						<a class="collection-item extra">
+							<div [style.align-items]="'flex-end'" [style.flex-grow]="1">
+					      		<div>
+						      		<div *ngFor="let serving of getArrayOfServings(itemObj); let j = index" class="chip" (click)="serving.key" [style.cursor]="'pointer'" [style.background]="j === 0 ? '#2bbbad' : ''">{{ serving.name }}
+						      		</div>
+						      	</div>
+						    </div>
+							<div class="servings-container">
+								<div class="facts-container">
+									<div class="fact-container">
+										<span>Servings</span>
+										<span>1x</span>
+										<span>2x</span>
+										<span>Today</span>
+										<span>Goal</span>
+									</div>
+									<div class="fact-container">
+										<span>Calories</span>
+										<span>2000</span>
+										<span>2000</span>
+										<span>2000</span>
+										<span>2000</span>
+									</div>
+									<div class="fact-container">
+										<span>Fats</span>
+										<span>20g</span>
+										<span>20g</span>
+										<span>107g</span>
+										<span>107g</span>
+									</div>
+									<div class="fact-container">
+										<span>Carbs</span>
+										<span>15g</span>
+										<span>15g</span>
+										<span>20g</span>
+										<span>20g</span>
+									</div>
+									<div class="fact-container">
+										<span>Protein</span>
+										<span>10g</span>
+										<span>10g</span>
+										<span>80g</span>
+										<span>80g</span>
+									</div>
+								</div>
+								<div class="servings-modifier">
+									<div class="servings-input">
+										<keto-input [label]="'Servings'" [text]="''" (valueChanged)="$event"></keto-input>
+									</div>
+									<div class="servings-button">
+						      			<a (click)="back()" class="waves-effect waves-grey btn">Add</a>
+						      		</div>
+								</div>
+							</div>
+						</a>
+						<a class="collection-item">{{ itemObj.name }}</a>
+						<a class="collection-item">{{ itemObj.name }}</a>
+					</ng-container>
+				</div>
+
+				<div>
+					<p></p>
+				</div>
+			</ng-container>
+		</div>
+	</div>
 </keto-container>
